@@ -16,8 +16,6 @@ The LPS22HB interrupt pin behavior may be configured through this class, but the
 - Configure the imp pin connected to INT_DRDY as a *DIGITAL_IN* with your desired callback function
 - Use the methods in this class to configure the interrupt behavior as required
 
-[add curcuit pic here]
-
 ## Class Usage
 
 ### Constructor: LPS22HB(*impI2cBus[, i2cAddress]*)

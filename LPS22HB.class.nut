@@ -19,11 +19,6 @@ class LPS22HB {
     static CTRL_REG2       = 0x11;
     static CTRL_REG3       = 0x12;
     static FIFO_CTRL       = 0x14;
-    // static REF_P_XL        = 0x15; // Reference Pressure
-    // static REF_P_L         = 0X16; // Reference Pressure
-    // static REF_P_H         = 0x17; // Reference Pressure
-    static RPDS_L          = 0x18; // Pressure Offset
-    static RPDS_H          = 0x19; // Pressure Offset
     static RES_CONF        = 0x1A;
     static INT_SOURCE      = 0x25;
     static FIFO_STATUS     = 0x26;
@@ -198,9 +193,10 @@ class LPS22HB {
         val = _getReg(CTRL_REG3);
         val = (options & INT_PIN_ACTIVELOW) ?  (val | INT_PIN_ACTIVELOW) : (val & ~ INT_PIN_ACTIVELOW);
         val = (options & INT_PIN_OPENDRAIN) ?  (val | INT_PIN_OPENDRAIN) : (val & ~ INT_PIN_OPENDRAIN);
+
         // route interrupt pin to data ready config
-        val = val | INT_DDRY_MASK;
-        (enable) ? (val | INT_DDRY_ENABLE) : (val & ~INT_DDRY_ENABLE);
+        val = val & INT_DDRY_MASK;
+        val = (enable) ? (val | INT_DDRY_ENABLE) : (val & ~INT_DDRY_ENABLE);
 
         _setReg(CTRL_REG3, val & 0xFF);
     }
