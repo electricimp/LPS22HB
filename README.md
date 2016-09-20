@@ -243,4 +243,4 @@ Returns the value of the device ID register, `0xBD`.
 
 ## License
 
-The LPS25H library is licensed under the [MIT License](./LICENSE).
+The LPS22HB library is licensed under the [MIT License](./LICENSE).
