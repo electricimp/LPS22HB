@@ -183,6 +183,27 @@ class LPS22HB {
     }
 
     // -------------------------------------------------------------------------
+    function configureLowPassFilter(bandwidth, reset = false) {
+        local val = _getReg(CTRL_REG1);
+
+        switch(bandwidth) {
+            case LPF_BANDWIDTH_ODR_20:
+                val  = val | LPF_BANDWIDTH_ODR_20;
+                break;
+            case LPF_BANDWIDTH_ODR_9:
+                val  = val | LPF_BANDWIDTH_ODR_9;
+                break;
+            default :
+                val = val & LPF_OFF;
+        }
+
+        _setReg(CTRL_REG1, val & 0xFF);
+
+        // reset to aviod transitory phase
+        if (reset) _getReg(LPFP_RES);
+    }
+
+    // -------------------------------------------------------------------------
     function configureDataReadyInterrupt(enable, options = 0) {
         // Check and set the options ------------------------------------------
         // Interrupt Config options

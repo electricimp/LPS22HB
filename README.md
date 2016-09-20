@@ -83,7 +83,7 @@ The LPS22HB can be configured in two different reading modes: *LPS22HB_MODE.ONE_
 The *dataRate* parameter sets the output data rate (ODR) of the pressure sensor in Hz. The nearest supported data rate less than or equal to the requested rate will be set and returned by *setMode()*. Supported data rates are 0 (one shot configuration), 1, 10, 25, 50 and 75Hz.
 
 ```squirrel
-local dataRate =pressureSensor.setMode(LPS22HB_MODE.CONTINUOUS, 25);
+local dataRate = pressureSensor.setMode(LPS22HB_MODE.CONTINUOUS, 25);
 server.log(dataRate);
 ```
 
@@ -149,6 +149,27 @@ reading = pressureSensor.read();
 server.log(reading.pressure);
 ```
 
+### configureLowPassFilter(*bandwidth[, reset]*)
+
+The *configureLowPassFilter()* method can enable, disable and reset the Low-pass filter when the device is in continuous mode.  The Low-pass filter is disabled by default. This method has one required parameter: a class constant *bandwidth*, see table below, and one optional parameter: a boolean *reset*.  If the Low-pass filter is active, in order to avoid the transitory phase pass `true` into the *reset* parameter.
+
+| Bandwidth Constant | Desctiption |
+| -- | -- |
+| LPF_BANDWIDTH_ODR_20 | Device bandwidth of ODR/20 |
+| LPF_BANDWIDTH_ODR_9 | Device bandwidth of ODR/9 |
+| LPF_OFF | Low-pass filter disabled, Device bandwidth of ODR/2 |
+
+```squirrel
+// Enable Low-pass filter with a bandwidth of ODR/9
+pressureSensor.setMode(LPS22HB_MODE.CONTINUOUS, 25);
+pressureSensor.configureLowPassFilter(LPS22HB.LPF_BANDWIDTH_ODR_9);
+```
+
+```squirrel
+// Disable Low-pass filter
+pressureSensor.configureLowPassFilter(LPS22HB.LPF_OFF, true);
+```
+
 ### configureDataReadyInterrupt(*enable[, options]*)
 
 This method configures the interrupt pin driver for a data ready interrupt. The device starts with this disabled by default.
@@ -197,12 +218,12 @@ This method configures the interrupt pin driver for an interrupt based on a thre
 
 ```squirrel
 // Enable interrupt, configure as push-pull, active-high, latched. Fire interrupt if pressure > 10 hPa
-pressureSensor.configureThresholdInterrupt(true, 10, LPS25H.INT_LATCH | LPS25H.INT_HIGH_PRESSURE);
+pressureSensor.configureThresholdInterrupt(true, 10, LPS22HB.INT_LATCH | LPS22HB.INT_HIGH_PRESSURE);
 ```
 
 ```squirrel
 // Enable interrupt, configure as open-drain, active-low, latched. Fire interrupt if pressure < -20 hPa
-pressureSensor.configureThresholdInterrupt(true, 20, LPS25H.INT_PIN_ACTIVELOW | LPS25H.INT_PIN_OPENDRAIN | LPS25H.INT_LATCH | LPS25H.INT_LOW_PRESSURE);
+pressureSensor.configureThresholdInterrupt(true, 20, LPS22HB.INT_PIN_ACTIVELOW | LPS22HB.INT_PIN_OPENDRAIN | LPS22HB.INT_LATCH | LPS22HB.INT_LOW_PRESSURE);
 ```
 
 ### getInterruptSrc()
