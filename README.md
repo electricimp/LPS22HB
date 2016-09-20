@@ -1,4 +1,4 @@
-# Driver for the LPS25H Air Pressure / Temperature Sensor
+# Driver for the LPS22HB Air Pressure / Temperature Sensor
 
 The [LPS22HB](http://www.st.com/content/ccc/resource/technical/document/datasheet/bf/c1/4f/23/61/17/44/8a/DM00140895.pdf/files/DM00140895.pdf/jcr:content/translations/en.DM00140895.pdf) is a MEMS absolute pressure sensor. This sensor features a large functional range (260-1260hPa) and internal averaging for improved precision.
 
@@ -23,11 +23,11 @@ The LPS22HB interrupt pin behavior may be configured through this class, but the
 The constructor takes two arguments to instantiate the class: a pre-configured I&sup2;C bus and the sensor’s I&sup2;C address in 8-bit form. The I&sup2;C address is optional and defaults to `0xB8`.
 
 ```squirrel
-// Non-default 8-bit I2C Address for LPS25H (SA0 pulled high)
-const LPS25H_ADDR = 0xBA;
+// Non-default 8-bit I2C Address for LPS22HB (SA0 pulled high)
+const LPS22HB_ADDR = 0xBA;
 
 hardware.i2c89.configure(CLOCK_SPEED_400_KHZ);
-pressureSensor <- LPS25H(hardware.i2c89, LPS25H_ADDR);
+pressureSensor <- LPS22HB(hardware.i2c89, LPS22HB_ADDR);
 ```
 
 ### Reset
@@ -36,7 +36,7 @@ The LPS22HB is not automatically reset when constructed so that Electric Imp app
 
 ```squirrel
 hardware.i2c89.configure(CLOCK_SPEED_400_KHZ);
-pressureSensor <- LPS25H(hardware.i2c89);
+pressureSensor <- LPS22HB(hardware.i2c89);
 pressureSensor.softReset();
 ```
 
@@ -250,7 +250,7 @@ if (intSrc.int_active) {
 
 ### softReset()
 
-Reset the LPS25H from software.
+Reset the LPS22HB from software.
 
 ```squirrel
 pressureSensor.softReset();
