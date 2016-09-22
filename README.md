@@ -4,7 +4,8 @@ The [LPS22HB](http://www.st.com/content/ccc/resource/technical/document/datashee
 
 The LPS22HB can interface over I&sup2;C or SPI. This class addresses only I&sup2;C for the time being.
 
-**To add this library to your project, add** `#require "LPS22HB.class.nut:1.0.0"` **to the top of your device code**
+Currently in beta - not released as a library.  To use please copy and paste the class.nut file in your device code.
+
 
 ## Hardware
 

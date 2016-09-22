@@ -7,7 +7,7 @@ enum LPS22HB_MODE {
 
 class LPS22HB {
 
-    static version = [1,0,0];
+    static version = [0,0,1];
 
     static MAX_MEAS_TIME_SECONDS = 0.5; // seconds; time to complete one-shot pressure conversion
 
