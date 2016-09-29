@@ -4,18 +4,28 @@ The [LPS22HB](http://www.st.com/content/ccc/resource/technical/document/datashee
 
 The LPS22HB can interface over I&sup2;C or SPI. This class addresses only I&sup2;C for the time being.
 
-Currently in beta - not released as a library.  To use please copy and paste the class.nut file in your device code.
-
+Currently in beta - is has not been released as a library. To use please copy and paste the `LPS22HB
+.class.nut` file in your device code.
 
 ## Hardware
 
-To use the LPS22HB, connect its I&sup2;C interface to any of your imp module’s I&sup2;C buses. To learn which pins provide I&sup2;C functionality, see the [imp pin mux](https://electricimp.com/docs/hardware/imp/pinmux/) in the Electric Imp Dev Center.
+To use the LPS22HB, connect its I&sup2;C interface to any of your imp module’s I&sup2;C buses. To learn which pins provide I&sup2;C functionality, please see the [imp pin mux](https://electricimp.com/docs/hardware/imp/pinmux/) in the Electric Imp Dev Center.
 
 The LPS22HB interrupt pin behavior may be configured through this class, but the corresponding imp pin and associated callback are not configured or managed through this class. To use the interrupt pin:
 
 - Connect the LPS22HB INT_DRDY pin to an imp GPIO pin
 - Configure the imp pin connected to INT_DRDY as a *DIGITAL_IN* with your desired callback function
 - Use the methods in this class to configure the interrupt behavior as required
+
+### Reset
+
+The LPS22HB is not automatically reset when constructed so that Electric Imp applications can use the device through sleep/wake cycles without it losing state. To reset the device to a known state, call the *softReset()* method:
+
+```squirrel
+hardware.i2c89.configure(CLOCK_SPEED_400_KHZ);
+pressureSensor <- LPS22HB(hardware.i2c89);
+pressureSensor.softReset();
+```
 
 ## Class Usage
 
@@ -31,25 +41,15 @@ hardware.i2c89.configure(CLOCK_SPEED_400_KHZ);
 pressureSensor <- LPS22HB(hardware.i2c89, LPS22HB_ADDR);
 ```
 
-### Reset
-
-The LPS22HB is not automatically reset when constructed so that Electric Imp applications can use the device through sleep/wake cycles without it losing state. To reset the device to a known state, call the *softReset()* method:
-
-```squirrel
-hardware.i2c89.configure(CLOCK_SPEED_400_KHZ);
-pressureSensor <- LPS22HB(hardware.i2c89);
-pressureSensor.softReset();
-```
-
 ## Class Methods
 
-### read([*callback*])
+### read(*[callback]*)
 
-The **read()** method returns a pressure reading in hPa and a temperature reading in °C. The reading result is in the form of a table with the fields *pressure* and *temperature*. If an error occurs during the reading the pressure and temperature fields will be null, and the reading table will contain an additional field, *err*, with a description of the error.
+The *read()* method returns a pressure reading in hectopascal (hPa) and a temperature reading in Celsius. The reading result is in the form of a table with the fields *pressure* and *temperature*. If an error occurs during the reading, the *pressure* and *temperature* fields will be null, and the reading table will contain an additional field, *err*, with a description of the error.
 
 If a callback parameter is provided, the reading executes asynchronously, and the results table will be passed to the supplied function as the only parameter. If no callback is provided, the method blocks until the reading has been taken and then returns the results table.
 
-#### Asynchronous example
+#### Asynchronous Example
 
 ```squirrel
 pressureSensor.read(function(result) {
@@ -61,7 +61,7 @@ pressureSensor.read(function(result) {
 });
 ```
 
-#### Synchronous example
+#### Synchronous Example
 
 ```squirrel
 function hpaToHg(hpa) {
@@ -79,9 +79,9 @@ if ("err" in result) {
 
 ### setMode(*mode[, dataRate]*)
 
-The LPS22HB can be configured in two different reading modes: *LPS22HB_MODE.ONE_SHOT* or  *LPS22HB_MODE.CONTINUOUS*. In *LPS22HB_MODE.ONE_SHOT* a reading will only be taken only when the *read()* method is called, this is the default mode.  In *LPS22HB_MODE.CONTINUOUS* a reading frequecy must also be selected using the *dataRate* parameter and when the *read()* method is called the latest reading will be returned.
+The LPS22HB can be configured in two different reading modes: *LPS22HB_MODE.ONE_SHOT* or *LPS22HB_MODE.CONTINUOUS*. In *LPS22HB_MODE.ONE_SHOT*, a reading will only be taken only when the *read()* method is called. This is the default mode.  In *LPS22HB_MODE.CONTINUOUS*, a reading frequecy must also be selected using the *dataRate* parameter and when the *read()* method is called the latest reading will be returned.
 
-The *dataRate* parameter sets the output data rate (ODR) of the pressure sensor in Hz. The nearest supported data rate less than or equal to the requested rate will be set and returned by *setMode()*. Supported data rates are 0 (one shot configuration), 1, 10, 25, 50 and 75Hz.
+The *dataRate* parameter sets the output data rate (ODR) of the pressure sensor in Hertz. The nearest supported data rate less than or equal to the requested rate will be set and returned by *setMode()*. Supported data rates are 0 (one-shot configuration), 1, 10, 25, 50 and 75Hz.
 
 ```squirrel
 local dataRate = pressureSensor.setMode(LPS22HB_MODE.CONTINUOUS, 25);
@@ -90,7 +90,7 @@ server.log(dataRate);
 
 ### getMode()
 
-Returns the LPS22HB_MODE of the pressure sensor.
+Returns the *LPS22HB_MODE* setting of the pressure sensor.
 
 ```squirrel
 local mode = pressureSensor.getMode();
@@ -104,7 +104,7 @@ if (mode == LPS22HB_MODE.CONTINUOUS) {
 
 ### getDataRate()
 
-Returns the output data rate (ODR) of the pressure sensor in Hz.
+Returns the output data rate (ODR) of the pressure sensor in Hertz.
 
 ```squirrel
 local dataRate = pressureSensor.getDataRate();
@@ -113,7 +113,7 @@ server.log(dataRate);
 
 ### enableLowCurrentMode(*enabled*)
 
-The *enableLowCurrentMode()* method sets the sensor's resolution mode and takes one required parameter: a boolean *enabled*.  When *enabled* is `true` the low current mode is enabled and the device minimizes the current consumption.  When *enabled* is `false` the device is optimized to lower the noise.  This mode should only be changed when the device is in power down mode (ie configured in one-shot mode and not taking a reading).
+The *enableLowCurrentMode()* method sets the sensor’s resolution mode and takes one required parameter: a boolean *enabled*.  When *enabled* is `true`, the low-current mode is enabled and the device minimizes the current consumption.  When *enabled* is `false`, the device is optimized to lower the noise. This mode should only be changed when the device is in power-down mode (ie. configured in one-shot mode and not taking a reading).
 
 ```squirrel
 pressureSensor.enableLowCurrentMode(true);
@@ -121,30 +121,39 @@ pressureSensor.enableLowCurrentMode(true);
 
 ### configureDifferentalPressureMode(*mode, enabled*)
 
-The *configureDifferentalPressureMode()* method takes two required parameters: a class constant *mode* and a boolean *enabled*.  There are two differental pressure modes: *LPS22HB_MODE.AUTO_ZERO* or *LPS22HB_MODE.AUTO_RIF_P*.  After enabling either mode the first reading taken will be used to set a reference pressure.  In *LPS22HB_MODE.AUTO_ZERO* mode both the pressure value used for interrupt generation and the pressure reading returned by the *read()* method will then be determided by subtracting the *referencePressure* from the measured pressure. In LPS22HB_MODE.AUTO_RIF_P mode the pressure value used for interrupt generation will be determided by subtracting the *referencePressure* from the measured pressure, however the pressure value returned by the *read()* method will be the measured pressure.  If sensor is configured in one-shot mode the *configureDifferentalPressureMode()* will take a reading to set the reference pressure.  If the sensor is configured in continuous mode you must wait one reading cycle before the reference pressure is set.
+The *configureDifferentalPressureMode()* method takes two required parameters: a class constant *mode* and a boolean *enabled*. 
 
-Once a mode is enabled the sensor will remain in that mode until it is disabled.  To disable select the mode and pass `false` into the *enabled* parameter.
+There are two differental pressure modes: *LPS22HB_MODE.AUTO_ZERO* or *LPS22HB_MODE.AUTO_RIF_P*. After enabling either mode, the first reading taken will be used to set a reference pressure. In *LPS22HB_MODE.AUTO_ZERO* mode, both the pressure value used for interrupt generation and the pressure reading returned by the *read()* method will then be determined by subtracting the *referencePressure* from the measured pressure. In LPS22HB_MODE.AUTO_RIF_P mode the pressure value used for interrupt generation will be determined by subtracting the *referencePressure* from the measured pressure. However, the pressure value returned by the *read()* method will be the measured pressure.
+
+If sensor is configured in one-shot mode, the *configureDifferentalPressureMode()* will take a reading to set the reference pressure. If the sensor is configured in continuous mode, you must wait one reading cycle before the reference pressure is set.
+
+Once a mode is enabled the sensor will remain in that mode until it is disabled. To disable select the mode and pass `false` into the *enabled* parameter.
 
 ```squirrel
 // Set mode to one-shot
 pressureSensor.setMode(LPS22HB_MODE.ONE_SHOT);
+
 // Take a reading
 local reading = pressureSensor.read();
 server.log(reading.pressure);
+
 // Enable Auto Zero
 server.log("----------------------------");
 server.log("Enable Auto Zero mode");
 pressureSensor.configureDifferentalPressureMode(LPS22HB_MODE.AUTO_ZERO, true);
+
 // Take a couple readings in Auto Zero mode
 reading = pressureSensor.read();
 server.log(reading.pressure);
 imp.sleep(5);
 reading = pressureSensor.read();
 server.log(reading.pressure);
+
 // Disable Auto Zero mode
 server.log("----------------------------");
 server.log("Disabling Auto Zero mode")
 press.configureDifferentalPressureMode(LPS22HB_MODE.AUTO_ZERO, false);
+
 // Take a reading
 reading = pressureSensor.read();
 server.log(reading.pressure);
@@ -152,13 +161,13 @@ server.log(reading.pressure);
 
 ### configureLowPassFilter(*bandwidth[, reset]*)
 
-The *configureLowPassFilter()* method can enable, disable and reset the Low-pass filter when the device is in continuous mode.  The Low-pass filter is disabled by default. This method has one required parameter: a class constant *bandwidth*, see table below, and one optional parameter: a boolean *reset*.  If the Low-pass filter is active, in order to avoid the transitory phase pass `true` into the *reset* parameter.
+The *configureLowPassFilter()* method can enable, disable and reset the low-pass filter when the device is in continuous mode. The low-pass filter is disabled by default. This method has one required parameter: a class constant *bandwidth* (see below) and one optional parameter: a boolean, *reset*. If the low-pass filter is active, in order to avoid the transitory phase pass `true` into the *reset* parameter.
 
-| Bandwidth Constant | Desctiption |
-| -- | -- |
-| LPF_BANDWIDTH_ODR_20 | Device bandwidth of ODR/20 |
-| LPF_BANDWIDTH_ODR_9 | Device bandwidth of ODR/9 |
-| LPF_OFF | Low-pass filter disabled, Device bandwidth of ODR/2 |
+| Bandwidth Constant | Description |
+| --- | --- |
+| *LPF_BANDWIDTH_ODR_20* | Device bandwidth of ODR 20 |
+| *LPF_BANDWIDTH_ODR_9* | Device bandwidth of ODR 9 |
+| *LPF_OFF* | Low-pass filter disabled, device bandwidth of ODR 2 |
 
 ```squirrel
 // Enable Low-pass filter with a bandwidth of ODR/9
@@ -173,21 +182,21 @@ pressureSensor.configureLowPassFilter(LPS22HB.LPF_OFF, true);
 
 ### configureDataReadyInterrupt(*enable[, options]*)
 
-This method configures the interrupt pin driver for a data ready interrupt. The device starts with this disabled by default.
+This method configures the interrupt pin driver for a data-ready interrupt. The device starts with this disabled by default.
 
 ####Parameters
 
 | Parameter | Type | Default | Description |
 | --- | --- | --- | --- |
-| *enable* | boolean | N/A | Set `true` to enable the interrupt pin. |
-| *options* | Bitfield | 0x00 | Configuration options combined with the bitwise OR operator. See the ‘Options’ table below. |
+| *enable* | Boolean | N/A | Set `true` to enable the interrupt pin |
+| *options* | Bitfield | 0x00 | Configuration options combined with the bitwise OR operator. See the ‘Options’ table below |
 
 #### Options
 
 | Option Constant | Description |
 | --- | --- |
-| *INT_PIN_ACTIVELOW* | Interrupt pin is active-high by default. Use to set interrupt to active-low. |
-| *INT_PIN_OPENDRAIN* | Interrupt pin driver push-pull by default.Use to set interrupt to open-drain. |
+| *INT_PIN_ACTIVELOW* | Interrupt pin is active-high by default. Use to set interrupt to active-low |
+| *INT_PIN_OPENDRAIN* | Interrupt pin driver push-pull by default. Use to set interrupt to open-drain |
 | *INT_LATCH* | Interrupt latching mode is disabled by default. Use to enable interrupt latching mode. To clear a latched interrupt pin call *getInterruptSrc()* |
 
 ```squirrel
@@ -199,20 +208,20 @@ pressureSensor.configureDataReadyInterrupt(true);
 
 This method configures the interrupt pin driver for an interrupt based on a threshold event. The device starts with this disabled by default.
 
-####Parameters
+#### Parameters
 
 | Parameter | Type | Default | Description |
 | --- | --- | --- | --- |
-| *enable* | boolean | N/A | Set `true` to enable the interrupt pin. |
-| *threshold* | Integer | null | Interrupts are generated on pressure events. The threshold is expressed in hectopascals (hPa). |
-| *options* | Bitfield | 0x00 | Configuration options combined with the bitwise OR operator. See the ‘Options’ table below. |
+| *enable* | Boolean | N/A | Set `true` to enable the interrupt pin. |
+| *threshold* | Integer | null | Interrupts are generated on pressure events. The threshold is expressed in hPa |
+| *options* | Bitfield | 0x00 | Configuration options combined with the bitwise OR operator. See the ‘Options’ table below |
 
 #### Options
 
 | Option Constant | Description |
 | --- | --- |
-| *INT_PIN_ACTIVELOW* | Interrupt pin is active-high by default. Use to set interrupt to active-low. |
-| *INT_PIN_OPENDRAIN* | Interrupt pin driver push-pull by default.Use to set interrupt to open-drain. |
+| *INT_PIN_ACTIVELOW* | Interrupt pin is active-high by default. Use to set interrupt to active-low |
+| *INT_PIN_OPENDRAIN* | Interrupt pin driver push-pull by default. Use to set interrupt to open-drain |
 | *INT_LATCH* | Interrupt latching mode is disabled by default. Use to enable interrupt latching mode. To clear a latched interrupt pin call *getInterruptSrc()* |
 | *INT_LOW_PRESSURE* | Interrupt is disabled by default. Use to enable interrupt when pressure below threshold |
 | *INT_HIGH_PRESSURE* | Interrupt is disabled by default. Use to enable interrupt when pressure above threshold |
@@ -231,7 +240,7 @@ pressureSensor.configureThresholdInterrupt(true, 20, LPS22HB.INT_PIN_ACTIVELOW |
 
 Use the *getInterruptSrc()* method to determine what caused an interrupt, and clear latched interrupt. This method returns a table with three keys to provide information about which interrupts are active.
 
-| key | Description |
+| Key | Description |
 | --- | --- |
 | *int_active* | `true` if an interrupt is currently active or latched |
 | *high_pressure* | `true` if the active or latched interrupt was due to a high pressure event |
@@ -241,7 +250,7 @@ Use the *getInterruptSrc()* method to determine what caused an interrupt, and cl
 // Check the interrupt source and clear the latched interrupt
 local intSrc = pressureSensor.getInterruptSrc();
 if (intSrc.int_active) {
-    // interrupt is active
+    // Interrupt is active
     if (intSrc.high_pressure) server.log("High Pressure Interrupt Occurred");
     if (intSrc.low_pressure) server.log("Low Pressure Interrupt Occurred");
 } else {
