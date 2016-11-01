@@ -4,10 +4,9 @@ The [LPS22HB](http://www.st.com/content/ccc/resource/technical/document/datashee
 
 The LPS22HB can interface over I&sup2;C or SPI. This class addresses only I&sup2;C for the time being.
 
-Currently in beta - is has not been released as a library. To use please copy and paste the `LPS22HB
-.class.nut` file in your device code.
+**To add this library to your project, add** `#require "LPS22HB.class.nut:1.0.0"` **to the top of your device code**
 
-## Hardware
+### Hardware
 
 To use the LPS22HB, connect its I&sup2;C interface to any of your imp module’s I&sup2;C buses. To learn which pins provide I&sup2;C functionality, please see the [imp pin mux](https://electricimp.com/docs/hardware/imp/pinmux/) in the Electric Imp Dev Center.
 
