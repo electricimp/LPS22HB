@@ -4,7 +4,7 @@ The [LPS22HB](http://www.st.com/content/ccc/resource/technical/document/datashee
 
 The LPS22HB can interface over I&sup2;C or SPI. This class addresses only I&sup2;C for the time being.
 
-**To add this library to your project, add** `#require "LPS22HB.class.nut:1.0.0"` **to the top of your device code**
+**To add this library to your project, add** `#require "LPS22HB.device.lib.nut:2.0.0"` **to the top of your device code**
 
 ### Hardware
 
@@ -120,7 +120,7 @@ pressureSensor.enableLowCurrentMode(true);
 
 ### configureDifferentalPressureMode(*mode, enabled*)
 
-The *configureDifferentalPressureMode()* method takes two required parameters: a class constant *mode* and a boolean *enabled*. 
+The *configureDifferentalPressureMode()* method takes two required parameters: a class constant *mode* and a boolean *enabled*.
 
 There are two differental pressure modes: *LPS22HB_MODE.AUTO_ZERO* or *LPS22HB_MODE.AUTO_RIF_P*. After enabling either mode, the first reading taken will be used to set a reference pressure. In *LPS22HB_MODE.AUTO_ZERO* mode, both the pressure value used for interrupt generation and the pressure reading returned by the *read()* method will then be determined by subtracting the *referencePressure* from the measured pressure. In LPS22HB_MODE.AUTO_RIF_P mode the pressure value used for interrupt generation will be determined by subtracting the *referencePressure* from the measured pressure. However, the pressure value returned by the *read()* method will be the measured pressure.
 
