@@ -151,7 +151,7 @@ server.log(reading.pressure);
 // Disable Auto Zero mode
 server.log("----------------------------");
 server.log("Disabling Auto Zero mode")
-press.configureDifferentalPressureMode(LPS22HB_MODE.AUTO_ZERO, false);
+pressureSensor.configureDifferentalPressureMode(LPS22HB_MODE.AUTO_ZERO, false);
 
 // Take a reading
 reading = pressureSensor.read();
