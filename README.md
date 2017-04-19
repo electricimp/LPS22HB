@@ -183,7 +183,7 @@ pressureSensor.configureLowPassFilter(LPS22HB.LPF_OFF, true);
 
 This method configures the interrupt pin driver for a data-ready interrupt. The device starts with this disabled by default.
 
-####Parameters
+#### Parameters
 
 | Parameter | Type | Default | Description |
 | --- | --- | --- | --- |
@@ -222,17 +222,17 @@ This method configures the interrupt pin driver for an interrupt based on a thre
 | *INT_PIN_ACTIVELOW* | Interrupt pin is active-high by default. Use to set interrupt to active-low |
 | *INT_PIN_OPENDRAIN* | Interrupt pin driver push-pull by default. Use to set interrupt to open-drain |
 | *INT_LATCH* | Interrupt latching mode is disabled by default. Use to enable interrupt latching mode. To clear a latched interrupt pin call *getInterruptSrc()* |
-| *INT_LOW_PRESSURE* | Interrupt is disabled by default. Use to enable interrupt when pressure below threshold |
-| *INT_HIGH_PRESSURE* | Interrupt is disabled by default. Use to enable interrupt when pressure above threshold |
+| *INT_LOW_PRESSURE* | Interrupt is disabled by default. Use to enable interrupt when pressure reading is below threshold on the negative side|
+| *INT_HIGH_PRESSURE* | Interrupt is disabled by default. Use to enable interrupt when pressure reading is above threshold on the positive side|
 
 ```squirrel
-// Enable interrupt, configure as push-pull, active-high, latched. Fire interrupt if pressure > 10 hPa
-pressureSensor.configureThresholdInterrupt(true, 10, LPS22HB.INT_LATCH | LPS22HB.INT_HIGH_PRESSURE);
+// Enable interrupt, configure as push-pull, active-high, latched. Fire interrupt if pressure > 1020 hPa
+pressureSensor.configureThresholdInterrupt(true, 1020, LPS22HB.INT_LATCH | LPS22HB.INT_HIGH_PRESSURE);
 ```
 
 ```squirrel
 // Enable interrupt, configure as open-drain, active-low, latched. Fire interrupt if pressure < -20 hPa
-pressureSensor.configureThresholdInterrupt(true, 20, LPS22HB.INT_PIN_ACTIVELOW | LPS22HB.INT_PIN_OPENDRAIN | LPS22HB.INT_LATCH | LPS22HB.INT_LOW_PRESSURE);
+pressureSensor.configureThresholdInterrupt(true, -20, LPS22HB.INT_PIN_ACTIVELOW | LPS22HB.INT_PIN_OPENDRAIN | LPS22HB.INT_LATCH | LPS22HB.INT_LOW_PRESSURE);
 ```
 
 ### getInterruptSrc()
@@ -267,7 +267,7 @@ pressureSensor.softReset();
 
 ### getDeviceID()
 
-Returns the value of the device ID register, `0xBD`.
+Returns the value of the device ID register, `0xB1`.
 
 ## License
 

@@ -82,7 +82,7 @@ class LPS22HB {
 
     // -------------------------------------------------------------------------
     function getDeviceID() {
-        return _readReg(WHO_AM_I, 1);
+        return _getReg(WHO_AM_I);
     }
 
     // -------------------------------------------------------------------------
@@ -268,7 +268,6 @@ class LPS22HB {
         val = (options & INT_LOW_PRESSURE) ? (val | INT_LOW_PRESSURE) : (val & ~ INT_LOW_PRESSURE);
         val = (options & INT_HIGH_PRESSURE) ? (val | INT_HIGH_PRESSURE) : (val & ~ INT_HIGH_PRESSURE);
         val = (enable) ? (val | INT_DIFF_ENABLE) : (val & ~INT_DIFF_ENABLE);
-
         _setReg(INT_CFG, val & 0xFF);
     }
 
