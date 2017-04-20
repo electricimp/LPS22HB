@@ -227,10 +227,14 @@ This method configures the interrupt pin driver for an interrupt based on a thre
 | *INT_LOW_PRESSURE* | Interrupt is disabled by default. Use to enable interrupt when pressure reading is below threshold on the negative side|
 | *INT_HIGH_PRESSURE* | Interrupt is disabled by default. Use to enable interrupt when pressure reading is above threshold on the positive side|
 
+#### Normal Threshold Interrupt Example:
+
 ```squirrel
 // Enable interrupt, configure as push-pull, active-high, latched. Fire interrupt if pressure > 1020 hPa
 pressureSensor.configureThresholdInterrupt(true, 1020, LPS22HB.INT_LATCH | LPS22HB.INT_HIGH_PRESSURE);
 ```
+
+#### Differential Threshold Interrupt Example:
 
 ```squirrel
 // Set interrupt threshold to trigger if pressure reading is more than 15 hpa below the reference pressure
