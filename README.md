@@ -6,7 +6,7 @@ The LPS22HB can interface over I&sup2;C or SPI. This class addresses only I&sup2
 
 **To add this library to your project, add** `#require "LPS22HB.device.lib.nut:2.0.0"` **to the top of your device code**
 
-[![Build Status](https://api.travis-ci.org/electricimp/MessageManager.svg?branch=master)](https://travis-ci.org/electricimp/LPS22HB)
+[![Build Status](https://api.travis-ci.org/electricimp/LPS22HB.svg?branch=master)](https://travis-ci.org/electricimp/LPS22HB)
 
 ### Hardware
 
