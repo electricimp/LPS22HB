@@ -6,6 +6,8 @@ The LPS22HB can interface over I&sup2;C or SPI. This class addresses only I&sup2
 
 **To add this library to your project, add** `#require "LPS22HB.device.lib.nut:2.0.0"` **to the top of your device code**
 
+[![Build Status](https://api.travis-ci.org/electricimp/MessageManager.svg?branch=master)](https://travis-ci.org/electricimp/LPS22HB)
+
 ### Hardware
 
 To use the LPS22HB, connect its I&sup2;C interface to any of your imp module’s I&sup2;C buses. To learn which pins provide I&sup2;C functionality, please see the [imp pin mux](https://electricimp.com/docs/hardware/imp/pinmux/) in the Electric Imp Dev Center.
@@ -231,8 +233,17 @@ pressureSensor.configureThresholdInterrupt(true, 1020, LPS22HB.INT_LATCH | LPS22
 ```
 
 ```squirrel
-// Enable interrupt, configure as open-drain, active-low, latched. Fire interrupt if pressure < -20 hPa
-pressureSensor.configureThresholdInterrupt(true, -20, LPS22HB.INT_PIN_ACTIVELOW | LPS22HB.INT_PIN_OPENDRAIN | LPS22HB.INT_LATCH | LPS22HB.INT_LOW_PRESSURE);
+// Set interrupt threshold to trigger if pressure reading is more than 15 hpa below the reference pressure
+local threshold = 15;
+
+// Configure continuous mode
+pressureSensor.setMode(LPS22HB_MODE.CONTINUOUS, 1);
+
+// Enable auto zero mode
+pressureSensor.configureDifferentalPressureMode(LPS22HB_MODE.AUTO_ZERO, true);
+
+// Enable interrupt, configure as open-drain, active-low, latched
+pressureSensor.configureThresholdInterrupt(true, threshold, LPS22HB.INT_PIN_ACTIVELOW | LPS22HB.INT_PIN_OPENDRAIN | LPS22HB.INT_LATCH | LPS22HB.INT_LOW_PRESSURE);
 ```
 
 ### getInterruptSrc()
