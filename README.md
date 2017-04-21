@@ -46,7 +46,7 @@ pressureSensor <- LPS22HB(hardware.i2c89, LPS22HB_ADDR);
 
 ### read(*[callback]*)
 
-The *read()* method returns a pressure reading in hectopascal (hPa) and a temperature reading in Celsius. The reading result is in the form of a table with the fields *pressure* and *temperature*. If an error occurs during the reading, the *pressure* and *temperature* fields will be null, and the reading table will contain an additional field, *err*, with a description of the error.
+The *read()* method returns a pressure reading in hectopascal (hPa) and a temperature reading in Celsius. The reading result is in the form of a table with the fields *pressure* and *temperature*. If an error occurs during the reading, the *pressure* and *temperature* fields will be null, and the reading table will contain an additional field, *error*, with a description of the error.
 
 If a callback parameter is provided, the reading executes asynchronously, and the results table will be passed to the supplied function as the only parameter. If no callback is provided, the method blocks until the reading has been taken and then returns the results table.
 
@@ -54,8 +54,8 @@ If a callback parameter is provided, the reading executes asynchronously, and th
 
 ```squirrel
 pressureSensor.read(function(result) {
-    if ("err" in result) {
-        server.error("An Error Occurred: " + result.err);
+    if ("error" in result) {
+        server.error("An Error Occurred: " + result.error);
     } else {
         server.log(format("Current Pressure: %0.2f hPa, Current Temperature: %0.2f °C", result.pressure, result.temperature));
     }
@@ -71,8 +71,8 @@ function hpaToHg(hpa) {
 
 local result = pressureSensor.read();
 
-if ("err" in result) {
-    server.error("An Error Occurred: " + result.err);
+if ("error" in result) {
+    server.error("An Error Occurred: " + result.error);
 } else {
     server.log(format("Current Pressure: %0.2f in. Hg", hpaToHg(result.pressure));
 }
