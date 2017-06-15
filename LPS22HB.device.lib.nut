@@ -1,3 +1,27 @@
+// MIT License
+//
+// Copyright 2016 Electric Imp
+//
+// SPDX-License-Identifier: MIT
+//
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be
+// included in all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+// EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO
+// EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES
+// OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
+// ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+// OTHER DEALINGS IN THE SOFTWARE.
+
 enum LPS22HB_MODE {
     ONE_SHOT,
     CONTINUOUS,
@@ -7,7 +31,7 @@ enum LPS22HB_MODE {
 
 class LPS22HB {
 
-    static version = [0,0,1];
+    static VERSION = "2.0.0";
 
     static MAX_MEAS_TIME_SECONDS = 0.5; // seconds; time to complete one-shot pressure conversion
 
@@ -28,21 +52,27 @@ class LPS22HB {
     static PRESS_OUT_H     = 0x2A;
     static TEMP_OUT_L      = 0x2B;
     static TEMP_OUT_H      = 0x2C;
-    static LPFP_RES       = 0x33;
+    static LPFP_RES        = 0x33;
 
-    static PRESSURE_SCALE = 4096.0;
+    static PRESSURE_SCALE           = 4096.0;
     static THRESHOLD_PRESSURE_SCALE = 16.0;
-    static TEMPERATURE_SCALE = 100.0;
+    static TEMPERATURE_SCALE        = 100.0;
 
     // interrupt settings
-    static INT_PIN_ACTIVELOW            = 0x80; // REG3 bit setting
-    static INT_PIN_OPENDRAIN            = 0x40; // REG3 bit setting
+    static INT_PIN_ACTIVELOW        = 0x80; // REG3 bit setting
+    static INT_PIN_OPENDRAIN        = 0x40; // REG3 bit setting
     static INT_LATCH                = 0x04; // INT_CFG bitt setting
     static INT_LOW_PRESSURE         = 0x02; // Both REG3 pin routing & INT_CFG bit settings
     static INT_HIGH_PRESSURE        = 0x01; // Both REG3 pin routing & INT_CFG bit settings
-    static INT_DDRY_MASK = 0xFC; // REG3 pin routing
-    static INT_DIFF_ENABLE = 0x08; // INT_CFG bit setting to enable threshold interrupts
-    static INT_DDRY_ENABLE = 0x04; // REG3 bit setting to enable data ready interrupts
+    static INT_DDRY_MASK            = 0xFC; // REG3 pin routing
+    static INT_DIFF_ENABLE          = 0x08; // INT_CFG bit setting to enable threshold interrupts
+    static INT_DDRY_ENABLE          = 0x04; // REG3 bit setting to enable data ready interrupts
+
+    // low pass filter settings/masks
+    static LPF_OFF                  = 0xF3;
+    static LPF_BANDWIDTH_ODR_9      = 0x08;
+    static LPF_BANDWIDTH_ODR_20     = 0x0C;
+
 
     _i2c        = null;
     _addr       = null;
@@ -58,7 +88,7 @@ class LPS22HB {
 
     // -------------------------------------------------------------------------
     function getDeviceID() {
-        return _readReg(WHO_AM_I, 1);
+        return _getReg(WHO_AM_I);
     }
 
     // -------------------------------------------------------------------------
@@ -244,7 +274,6 @@ class LPS22HB {
         val = (options & INT_LOW_PRESSURE) ? (val | INT_LOW_PRESSURE) : (val & ~ INT_LOW_PRESSURE);
         val = (options & INT_HIGH_PRESSURE) ? (val | INT_HIGH_PRESSURE) : (val & ~ INT_HIGH_PRESSURE);
         val = (enable) ? (val | INT_DIFF_ENABLE) : (val & ~INT_DIFF_ENABLE);
-
         _setReg(INT_CFG, val & 0xFF);
     }
 
