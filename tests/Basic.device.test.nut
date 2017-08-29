@@ -27,19 +27,25 @@ class BasicTestCase extends ImpTestCase {
 
     _press = null;
     _int = null;
+    _i2c = null;
 
     // Initialize sensor
     function setUp() {
         // imp001 explorer kit i2c bus
-        local i2c = hardware.i2c89;
-        i2c.configure(CLOCK_SPEED_400_KHZ);
+        _i2c = hardware.i2c89;
+        _i2c.configure(CLOCK_SPEED_400_KHZ);
         // imp001 explorer kit i2c address
         local addr = 0xB8;
 
         _int = hardware.pin1;
 
-        _press = LPS22HB(i2c, addr);
+        _press = LPS22HB(_i2c, addr);
         _press.softReset();
+
+        // Explorer kit shares an interupt pin with other sensors
+        // Reset and clear interrupt for other sensors
+        resetAccel();
+        resetTempHumid();
 
         return "Sensor initialized";
     }
@@ -322,6 +328,38 @@ class BasicTestCase extends ImpTestCase {
         this.assertEqual(expectedDR, getDR, "Get data rate not equal to expected data rate");
 
         return "Unsupported data rate rounded down to expected rate"
+    }
+
+    // Helper Reset methods
+    function resetAccel() {
+        local addr = 0x32;
+        // Set default values for registers
+        _setReg(addr, 0x20, 0x07);
+        _setReg(addr, 0x21, 0x00);
+        _setReg(addr, 0x22, 0x00);
+        _setReg(addr, 0x23, 0x00);
+        _setReg(addr, 0x24, 0x00);
+        _setReg(addr, 0x25, 0x00);
+        _setReg(addr, 0x30, 0x00);
+        _setReg(addr, 0x32, 0x00);
+        _setReg(addr, 0x33, 0x00);
+        _setReg(addr, 0x38, 0x00);
+        _setReg(addr, 0x39, 0x00);
+        _setReg(addr, 0x3A, 0x00);
+        _setReg(addr, 0x3B, 0x00);
+        _setReg(addr, 0x3C, 0x00);
+        _setReg(addr, 0x2E, 0x00);
+        _setReg(addr, 0x2E, 0x00);
+    }
+
+    function resetTempHumid() {
+        local addr = 0xBE;
+        // Disable interrupt
+        _setReg(addr, 0x22, 0x00);
+    }
+
+    function _setReg(addr, reg, val) {
+        _i2c.write(addr, format("%c%c", reg, (val & 0xff)));
     }
 
     function tearDown() {
