@@ -12,7 +12,7 @@ The LPS22HB can interface over I&sup2;C or SPI. This class addresses only I&sup2
 
 ### Hardware
 
-To use the LPS22HB, connect its I&sup2;C interface to any of your imp module’s I&sup2;C buses. To learn which pins provide I&sup2;C functionality, please see the [imp pin mux](https://electricimp.com/docs/hardware/imp/pinmux/) in the Electric Imp Dev Center.
+To use the LPS22HB, connect its I&sup2;C interface to any of your imp module’s I&sup2;C buses. To learn which pins provide I&sup2;C functionality, please see the [imp pin mux](https://developer.electricimp.com/hardware/imp/pinmux) in the Electric Imp Dev Center.
 
 The LPS22HB interrupt pin behavior may be configured through this class, but the corresponding imp pin and associated callback are not configured or managed through this class. To use the interrupt pin:
 
